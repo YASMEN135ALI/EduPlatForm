@@ -1,0 +1,27 @@
+.card {
+    border-radius: 12px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.btn-action {
+    margin: 0 3px;
+}
+.card {
+    border-radius: 12px;
+}
+
+.table th, .table td {
+    vertical-align: middle;
+}
+
+.course-card {
+    transition: 0.3s;
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
+}
+

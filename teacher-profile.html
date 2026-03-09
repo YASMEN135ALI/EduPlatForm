@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ملف المدرّس - EduPlatform</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="assets/css/profile.css">
+          <link rel="stylesheet" href="assets/css/theme.css">
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <div class="container py-5">
+
+        <!-- Teacher Info -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body text-center">
+
+                <img id="teacherAvatar" class="profile-img mb-3" src="assets/img/user.png" alt="Teacher">
+
+                <h3 id="teacherName" class="fw-bold"></h3>
+                <p id="teacherEmail" class="text-muted"></p>
+                <p id="teacherSpecialty" class="text-primary fw-bold"></p>
+
+                <div class="d-flex justify-content-center gap-4 mt-3">
+                    <span class="badge bg-success p-2">الكورسات: <span id="coursesCount"></span></span>
+                    <span class="badge bg-info p-2">الطلاب: <span id="studentsCount"></span></span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Bio -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">نبذة عن المدرّس</h4>
+                <p id="teacherBio"></p>
+            </div>
+        </div>
+
+        <!-- Courses -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">كورسات المدرّس</h4>
+
+                <div id="teacherCourses" class="row">
+                    <!-- سيتم تحميل الكورسات هنا -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="footer"></div>
+
+   
+     <script src="assets/js/bootstrap.bundle.min.js"></script>
+     <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    <script src="assets/js/teacher-profile.js"></script>
+
+</body>
+</html>

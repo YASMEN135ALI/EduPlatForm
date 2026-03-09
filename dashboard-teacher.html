@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة المدرّس - EduPlatform</title>
+
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+      <link rel="stylesheet" href="assets/css/theme.css">
+        <link rel="stylesheet" href="assets/css/dashboard.css">
+</head>
+
+<body>
+
+    <div id="navbar"></div>
+
+    <div class="container py-5">
+
+        <h2 class="fw-bold mb-4 text-center">لوحة تحكم المدرّس</h2>
+
+        <!-- Stats Section -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3">
+                    <h4 class="fw-bold">عدد الكورسات</h4>
+                    <p id="coursesCount" class="display-6">0</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3">
+                    <h4 class="fw-bold">عدد الطلاب</h4>
+                    <p id="studentsCount" class="display-6">0</p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm text-center p-3">
+                    <h4 class="fw-bold">عدد الدروس</h4>
+                    <p id="lessonsCount" class="display-6">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add Course Button -->
+        <div class="text-end mb-3">
+            <a href="create-course.html" class="btn btn-success">إضافة كورس جديد</a>
+        </div>
+
+        <!-- My Courses -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="fw-bold mb-3">كورساتي</h4>
+
+                <div class="row" id="teacherCoursesContainer">
+                    <!-- سيتم تحميل الكورسات هنا -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="footer"></div>
+
+  
+     <script src="assets/js/bootstrap.bundle.min.js"></script>
+     <script src="assets/js/bootstrap.min.js"></script>    <script src="assets/js/main.js"></script>
+    <script src="assets/js/dashboard-teacher.js"></script>
+
+</body>
+</html>
