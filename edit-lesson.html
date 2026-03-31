@@ -2,61 +2,43 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تعديل الدرس - EduPlatform</title>
-
+    <title>تعديل الدرس</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-        <link rel="stylesheet" href="assets/css/forms.css">
-          <link rel="stylesheet" href="assets/css/theme.css">
+    <link rel="stylesheet" href="assets/css/forms.css">
 </head>
-
 <body>
 
-    <div id="navbar"></div>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">تعديل الدرس</h1>
 
-    <div class="login-container">
-        <div class="login-box shadow">
+    <form id="editLessonForm" class="p-4 shadow rounded bg-white">
 
-            <h2 class="text-center mb-4 fw-bold">تعديل الدرس</h2>
-
-            <form id="editLessonForm">
-
-                <div class="mb-3">
-                    <label class="form-label">عنوان الدرس</label>
-                    <input type="text" id="lessonTitle" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">وصف الدرس</label>
-                    <textarea id="lessonDescription" class="form-control" rows="4"></textarea>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">رابط الفيديو</label>
-                    <input type="text" id="lessonVideo" class="form-control">
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label">ترتيب الدرس</label>
-                    <input type="number" id="lessonOrder" class="form-control">
-                </div>
-
-                <button type="submit" class="btn btn-warning w-100 mt-3">حفظ التعديلات</button>
-
-                <div id="errorMsg" class="alert alert-danger text-center d-none mt-3"></div>
-                <div id="successMsg" class="alert alert-success text-center d-none mt-3"></div>
-
-            </form>
+        <div class="mb-3">
+            <label class="form-label">عنوان الدرس</label>
+            <input type="text" id="title" class="form-control" required>
         </div>
-    </div>
 
-    <div id="footer"></div>
+        <div class="mb-3">
+            <label class="form-label">ترتيب الدرس</label>
+            <input type="number" id="order_index" class="form-control" min="1" required>
+        </div>
 
-  
-     <script src="assets/js/bootstrap.bundle.min.js"></script>
-     <script src="assets/js/bootstrap.min.js"></script>
-         <script src="assets/js/main.js"></script>
-    <script src="assets/js/edit-lesson.js"></script>
+        <div class="mb-3">
+            <label class="form-label">الفيديو الحالي</label><br>
+            <video id="currentVideo" width="300" controls></video>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">تغيير الفيديو</label>
+            <input type="file" id="video" class="form-control" accept="video/*">
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">حفظ التعديلات</button>
+    </form>
+</div>
+
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/edit-lesson.js"></script>
 
 </body>
 </html>

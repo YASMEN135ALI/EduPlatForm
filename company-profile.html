@@ -13,54 +13,62 @@
 
 <body>
 
-    <div id="navbar"></div>
+<div class="container py-5">
 
-    <div class="container py-5">
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center">
+            <img id="companyLogo" class="profile-img mb-3" src="assets/img/company.png" alt="Company Logo">
 
-        <!-- Company Info -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body text-center">
-
-                <img id="companyLogo" class="profile-img mb-3" src="assets/img/company.png" alt="Company">
-
-                <h3 id="companyName" class="fw-bold"></h3>
-                <p id="companyEmail" class="text-muted"></p>
-                <p id="companyIndustry" class="text-primary fw-bold"></p>
-
-                <div class="d-flex justify-content-center gap-4 mt-3">
-                    <span class="badge bg-success p-2">الوظائف: <span id="jobsCount"></span></span>
-                    <span class="badge bg-info p-2">المتقدمون: <span id="applicantsCount"></span></span>
-                </div>
-
-            </div>
+            <h3 id="companyName" class="fw-bold"></h3>
+            <p id="companyIndustry" class="text-muted"></p>
+            <p id="companyLocation"></p>
         </div>
-
-        <!-- Bio -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="fw-bold mb-3">نبذة عن الشركة</h4>
-                <p id="companyBio"></p>
-            </div>
-        </div>
-
-        <!-- Jobs -->
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <h4 class="fw-bold mb-3">وظائف الشركة</h4>
-
-                <div id="companyJobs" class="row">
-                    <!-- سيتم تحميل الوظائف هنا -->
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <div id="footer"></div>
+    <!-- Edit Company Profile -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            <h4 class="fw-bold mb-3">تعديل بيانات الشركة</h4>
+
+            <form id="editCompanyForm">
+
+                <div class="mb-3">
+                    <label class="form-label">اسم الشركة</label>
+                    <input type="text" id="companyNameInput" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">مجال العمل</label>
+                    <input type="text" id="industryInput" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">الموقع</label>
+                    <input type="text" id="locationInput" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="text" id="phoneInput" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">الموقع الإلكتروني</label>
+                    <input type="text" id="websiteInput" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">حفظ التعديلات</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+
 
   
      <script src="assets/js/bootstrap.bundle.min.js"></script>
-     <script src="assets/js/bootstrap.min.js"></script>    <script src="assets/js/main.js"></script>
+     <script src="assets/js/bootstrap.min.js"></script>  
+      
     <script src="assets/js/company-profile.js"></script>
 
 </body>

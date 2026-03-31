@@ -1,64 +1,74 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تفاصيل الكورس - EduPlatform</title>
-
-
+    <title>تفاصيل الكورس</title>
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/theme.css">
 </head>
 
 <body>
 
-    <div id="navbar"></div>
-    <section class="mt-5">
-        <div class="container py-5">
+<div class="container py-5">
 
-            <!-- Course Header -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <h2 id="courseTitle" class="fw-bold"></h2>
-                    <p id="courseDescription" class="text-muted"></p>
+    <!-- ====== Header Section ====== -->
+    <div class="row mb-4">
 
-                    <div class="d-flex justify-content-between mt-4">
-                        <div>
-                            <strong>المدرّس:</strong>
-                            <span id="courseTeacher"></span>
-                        </div>
-
-                        <div>
-                            <strong>عدد الدروس:</strong>
-                            <span id="lessonCount"></span>
-                        </div>
-                    </div>
-
-                    <button id="enrollBtn" class="btn btn-primary w-100 mt-4">
-                        التسجيل في الكورس
-                    </button>
-                </div>
-            </div>
-
-            <!-- Lessons List -->
-            <h4 class="fw-bold mb-3">محتوى الكورس</h4>
-            <div id="lessonsContainer" class="list-group shadow-sm">
-                <!-- سيتم تحميل الدروس هنا -->
-            </div>
-
+        <!-- صورة الكورس -->
+        <div class="col-md-4">
+            <img id="courseImage" src="assets/img/course-placeholder.jpg" class="img-fluid rounded shadow">
         </div>
-    </section>
 
-    <div id="footer"></div>
+        <!-- معلومات الكورس -->
+        <div class="col-md-8">
+            <h2 id="courseTitle" class="fw-bold mb-3">اسم الكورس</h2>
 
+            <p id="courseDescription" class="text-muted mb-3"></p>
 
-    <script src="assets/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/main.js"></script>
-    <script src="assets/js/course-detail.js"></script>
+            <p><strong>المدرّس:</strong> <span id="courseTeacher"></span></p>
+            <p><strong>المستوى:</strong> <span id="courseLevel"></span></p>
+            <p><strong>المدة:</strong> <span id="courseDuration"></span></p>
+            <p><strong>السعر:</strong> <span id="coursePrice"></span></p>
 
+            <button id="enrollBtn" class="btn btn-primary mt-3 px-4">التسجيل في الكورس</button>
+        </div>
+
+    </div>
+
+    <!-- ====== Progress Bar ====== -->
+    <div id="progressSection" class="mb-5 d-none">
+        <h4 class="fw-bold mb-3">نسبة التقدّم</h4>
+        <div class="progress" style="height: 25px;">
+            <div id="progressBar" class="progress-bar bg-success" style="width: 0%;">
+                0%
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== Lessons Section ====== -->
+    <div class="mb-5">
+        <h4 class="fw-bold mb-3">الدروس</h4>
+        <div id="lessonsList" class="list-group shadow-sm">
+            <!-- الدروس ستظهر هنا -->
+        </div>
+    </div>
+
+    <!-- ====== Quizzes Section ====== -->
+    <div class="mb-5">
+        <h4 class="fw-bold mb-3">الاختبارات</h4>
+        <div id="quizzesList" class="list-group shadow-sm">
+            <!-- الاختبارات ستظهر هنا -->
+        </div>
+    </div>
+
+    <!-- ====== Certificate Section ====== -->
+    <div id="certificateSection" class="text-center py-4 d-none">
+        <h4 class="fw-bold mb-3">🎉 مبروك! لقد أكملت الكورس</h4>
+        <button class="btn btn-success px-4">تحميل الشهادة</button>
+    </div>
+
+</div>
+
+<script src="assets/js/course-details.js"></script>
 </body>
-
 </html>

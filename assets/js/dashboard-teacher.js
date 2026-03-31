@@ -1,32 +1,61 @@
-// بيانات تجريبية
-const teacherCourses = [
-    { id: 1, title: "دورة Python", students: 120, lessons: 15 },
-    { id: 2, title: "دورة Django", students: 85, lessons: 10 },
-    { id: 3, title: "مقدمة في الذكاء الاصطناعي", students: 60, lessons: 12 }
-];
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Teacher Dashboard Loaded");
 
-// حساب الإحصائيات
-document.getElementById("coursesCount").textContent = teacherCourses.length;
-document.getElementById("studentsCount").textContent = teacherCourses.reduce((a, b) => a + b.students, 0);
-document.getElementById("lessonsCount").textContent = teacherCourses.reduce((a, b) => a + b.lessons, 0);
+    const token = localStorage.getItem("token");
 
-// تحميل الكورسات
-const container = document.getElementById("teacherCoursesContainer");
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
-teacherCourses.forEach(course => {
-    container.innerHTML += `
-        <div class="col-md-4 mb-4">
-            <div class="card course-card shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title fw-bold">${course.title}</h5>
-                    <p class="text-muted">الطلاب: ${course.students}</p>
-                    <p class="text-muted">الدروس: ${course.lessons}</p>
+    fetch("http://127.0.0.1:8000/api/accounts/teacher/dashboard/", {
+        method: "GET",
+        headers: {
+            "Authorization": "Token " + token
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data);
 
-                    <a href="course-detail.html?id=${course.id}" class="btn btn-primary w-100 mb-2">عرض الكورس</a>
-                    <a href="edit-course.html?id=${course.id}" class="btn btn-warning w-100 mb-2">تعديل الكورس</a>
-                    <a href="create-lesson.html?course=${course.id}" class="btn btn-success w-100">إضافة درس</a>
+        // اسم المدرّس
+        document.getElementById("teacherName").textContent =
+            data.teacher.first_name + " " + data.teacher.last_name;
+
+        // التخصص
+        document.getElementById("teacherSpecialization").textContent =
+            data.profile.specialization || "غير محدد";
+
+        // عدد الدورات
+        document.getElementById("coursesCount").textContent = data.courses.length;
+
+        // الطلاب والمشاهدات (لاحقًا)
+        document.getElementById("studentsCount").textContent = 0;
+        document.getElementById("viewsCount").textContent = 0;
+
+        // عرض الدورات
+        const coursesList = document.getElementById("coursesList");
+        coursesList.innerHTML = "";
+
+        data.courses.forEach(course => {
+            const card = `
+                <div class="course-card">
+                    <h5>${course.title}</h5>
+                    <p>${course.description.substring(0, 120)}...</p>
+                    <button class="btn btn-primary btn-sm">إدارة الدورة</button>
                 </div>
-            </div>
-        </div>
-    `;
+            `;
+            coursesList.innerHTML += card;
+        });
+
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("حدث خطأ أثناء تحميل البيانات.");
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", function () {
+        localStorage.clear();
+        window.location.href = "login.html";
+    });
 });

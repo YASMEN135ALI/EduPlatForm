@@ -1,51 +1,68 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("Company JS Loaded");
 
     const form = document.getElementById("companyForm");
 
-    form.addEventListener("submit", function (e) {
+    form.addEventListener("submit", async function (e) {
         e.preventDefault();
+        console.log("Submitting company form...");
 
-        const company_name = document.getElementById("company_name").value.trim();
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value.trim();
-        const industry = document.getElementById("industry").value.trim();
+        // Collect text fields
+        const company_name = document.getElementById("company_name").value;
+        const industry = document.getElementById("industry").value;
         const size = document.getElementById("size").value;
-        const phone = document.getElementById("phone").value.trim();
-        const location = document.getElementById("location").value.trim();
-        const website = document.getElementById("website").value.trim();
+        const phone = document.getElementById("phone").value;
+        const location = document.getElementById("location").value;
+        const website = document.getElementById("website").value;
 
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        // Collect files
         const license = document.getElementById("license").files[0];
         const certificate = document.getElementById("certificate").files[0];
         const logo = document.getElementById("logo").files[0];
 
-        // التحقق من الحقول النصية
-        if (!company_name || !email || !password || !industry || !size || !phone || !location) {
-            alert("يرجى ملء جميع الحقول المطلوبة");
-            return;
+        // Build FormData
+        const formData = new FormData();
+        formData.append("company_name", company_name);
+        formData.append("industry", industry);
+        formData.append("size", size);
+        formData.append("phone", phone);
+        formData.append("location", location);
+        formData.append("website", website);
+
+        formData.append("email", email);
+        formData.append("password", password);
+
+        formData.append("license", license);
+        formData.append("certificate", certificate);
+        if (logo) {
+            formData.append("logo", logo);
         }
 
-        // التحقق من الملفات
-        if (!license || !certificate) {
-            alert("يرجى رفع السجل التجاري وشهادة التأسيس");
-            return;
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/accounts/register/company/", {
+                method: "POST",
+                body: formData
+            });
+
+            const result = await response.json();
+            console.log(result);
+
+            if (result.status === "success") {
+                alert("تم تسجيل الشركة بنجاح! حسابكم الآن قيد المراجعة من قبل الإدارة.");
+                form.reset();
+
+                // 🔥 التوجيه لصفحة انتظار الموافقة
+                window.location.href = "company_pending.html";
+            } else {
+                alert("حدث خطأ أثناء التسجيل. يرجى التحقق من البيانات.");
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("تعذر الاتصال بالخادم. تأكد أن السيرفر يعمل.");
         }
-
-        // تجهيز البيانات داخليًا
-        const companyData = {
-            company_name,
-            email,
-            password,
-            industry,
-            size,
-            phone,
-            location,
-            website,
-            license,
-            certificate,
-            logo
-        };
-
-        console.log("Company Data Ready:", companyData);
-        alert("تم تجهيز البيانات — سيتم الربط مع الباك لاحقًا");
     });
 });

@@ -1,60 +1,58 @@
-// الحصول على ID الكورس من الرابط
+const form = document.getElementById("editCourseForm");
+
+// استخراج ID من الرابط
 const urlParams = new URLSearchParams(window.location.search);
 const courseId = urlParams.get("id");
 
-// عناصر الصفحة
-const titleEl = document.getElementById("courseTitle");
-const descEl = document.getElementById("courseDescription");
-const categoryEl = document.getElementById("courseCategory");
-const levelEl = document.getElementById("courseLevel");
-const imageEl = document.getElementById("courseImage");
+// تحميل بيانات الكورس
+async function loadCourse() {
+    const response = await fetch(`http://127.0.0.1:8000/api/accounts/teacher/course/${courseId}/`, {
+        headers: {
+            "Authorization": "Token " + localStorage.getItem("token")
+        }
+    });
 
-const errorMsg = document.getElementById("errorMsg");
-const successMsg = document.getElementById("successMsg");
+    const course = await response.json();
 
-// بيانات تجريبية
-const sampleCourse = {
-    id: 1,
-    title: "دورة Python",
-    description: "تعلم أساسيات لغة Python من الصفر.",
-    category: "programming",
-    level: "beginner",
-    image: "python.jpg"
-};
+    document.getElementById("title").value = course.title;
+    document.getElementById("description").value = course.description;
+    document.getElementById("price").value = course.price;
+    document.getElementById("level").value = course.level;
+    document.getElementById("duration").value = course.duration;
 
-// تحميل بيانات الكورس داخل الحقول
-function loadCourseData(course) {
-    titleEl.value = course.title;
-    descEl.value = course.description;
-    categoryEl.value = course.category;
-    levelEl.value = course.level;
+    document.getElementById("currentImage").src = course.image;
 }
 
-// تحميل البيانات التجريبية الآن
-loadCourseData(sampleCourse);
+loadCourse();
 
-// حفظ التعديلات
-document.getElementById("editCourseForm").addEventListener("submit", function (e) {
+// إرسال التعديلات
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const updatedCourse = {
-        title: titleEl.value.trim(),
-        description: descEl.value.trim(),
-        category: categoryEl.value.trim(),
-        level: levelEl.value.trim(),
-        image: imageEl.files[0] || null
-    };
+    const data = new FormData();
+    data.append("title", document.getElementById("title").value);
+    data.append("description", document.getElementById("description").value);
+    data.append("price", document.getElementById("price").value);
+    data.append("level", document.getElementById("level").value);
+    data.append("duration", document.getElementById("duration").value);
 
-    if (!updatedCourse.title || !updatedCourse.description) {
-        errorMsg.textContent = "يرجى تعبئة جميع الحقول المطلوبة";
-        errorMsg.classList.remove("d-none");
-        successMsg.classList.add("d-none");
-        return;
+    const imageFile = document.getElementById("image").files[0];
+    if (imageFile) {
+        data.append("image", imageFile);
     }
 
-    errorMsg.classList.add("d-none");
-    successMsg.textContent = "تم حفظ التعديلات (جاهزة للربط مع API)";
-    successMsg.classList.remove("d-none");
+    const response = await fetch(`http://127.0.0.1:8000/api/accounts/teacher/course/${courseId}/update/`, {
+        method: "PUT",
+        headers: {
+            "Authorization": "Token " + localStorage.getItem("token")
+        },
+        body: data
+    });
 
-    console.log("Updated Course Data:", updatedCourse);
+    if (response.ok) {
+        alert("تم تعديل الكورس بنجاح");
+        window.location.href = "teacher_courses.html";
+    } else {
+        alert("حدث خطأ أثناء تعديل الكورس");
+    }
 });

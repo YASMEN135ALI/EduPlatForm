@@ -1,57 +1,75 @@
-// الحصول على ID الدرس من الرابط
+const form = document.getElementById("editLessonForm");
+
+// استخراج lesson_id من الرابط
 const urlParams = new URLSearchParams(window.location.search);
 const lessonId = urlParams.get("id");
 
-// عناصر الصفحة
-const titleEl = document.getElementById("lessonTitle");
-const descEl = document.getElementById("lessonDescription");
-const videoEl = document.getElementById("lessonVideo");
-const orderEl = document.getElementById("lessonOrder");
+// تحميل بيانات الدرس
+async function loadLesson() {
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/accounts/teacher/lesson/${lessonId}/`, {
+            headers: {
+                "Authorization": "Token " + localStorage.getItem("token")
+            }
+        });
 
-const errorMsg = document.getElementById("errorMsg");
-const successMsg = document.getElementById("successMsg");
+        if (!response.ok) {
+            const text = await response.text();
+            console.error("Error response:", text);
+            alert("تعذر تحميل بيانات الدرس");
+            return;
+        }
 
-// بيانات تجريبية
-const sampleLesson = {
-    id: 1,
-    title: "مقدمة في Python",
-    description: "شرح أساسيات لغة Python وكيفية تشغيل أول برنامج.",
-    video: "https://youtube.com/example",
-    order: 1
-};
+        const lesson = await response.json();
 
-// تحميل بيانات الدرس داخل الحقول
-function loadLessonData(lesson) {
-    titleEl.value = lesson.title;
-    descEl.value = lesson.description;
-    videoEl.value = lesson.video;
-    orderEl.value = lesson.order;
+        document.getElementById("title").value = lesson.title;
+        document.getElementById("order_index").value = lesson.order_index;
+
+        // عرض الفيديو الحالي إذا موجود
+        if (lesson.video) {
+            document.getElementById("currentVideo").src = lesson.video;
+        }
+
+    } catch (error) {
+        console.error("Error loading lesson:", error);
+        alert("حدث خطأ أثناء تحميل الدرس");
+    }
 }
 
-// تحميل البيانات التجريبية الآن
-loadLessonData(sampleLesson);
+loadLesson();
 
-// حفظ التعديلات
-document.getElementById("editLessonForm").addEventListener("submit", function (e) {
+// إرسال التعديلات
+form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const updatedLesson = {
-        title: titleEl.value.trim(),
-        description: descEl.value.trim(),
-        video: videoEl.value.trim(),
-        order: orderEl.value.trim()
-    };
+    const data = new FormData();
+    data.append("title", document.getElementById("title").value);
+    data.append("order_index", document.getElementById("order_index").value);
 
-    if (!updatedLesson.title || !updatedLesson.description || !updatedLesson.video || !updatedLesson.order) {
-        errorMsg.textContent = "يرجى تعبئة جميع الحقول المطلوبة";
-        errorMsg.classList.remove("d-none");
-        successMsg.classList.add("d-none");
-        return;
+    const videoFile = document.getElementById("video").files[0];
+    if (videoFile) {
+        data.append("video", videoFile);
     }
 
-    errorMsg.classList.add("d-none");
-    successMsg.textContent = "تم حفظ التعديلات (جاهزة للربط مع API)";
-    successMsg.classList.remove("d-none");
+    try {
+        const response = await fetch(`http://127.0.0.1:8000/api/accounts/teacher/lesson/${lessonId}/update/`, {
+            method: "PATCH",   // 🔥 مهم جدًا — تعديل جزئي وليس PUT
+            headers: {
+                "Authorization": "Token " + localStorage.getItem("token")
+            },
+            body: data
+        });
 
-    console.log("Updated Lesson Data:", updatedLesson);
+        if (response.ok) {
+            alert("تم تعديل الدرس بنجاح");
+            window.history.back();
+        } else {
+            const errorData = await response.json();
+            console.error("Error:", errorData);
+            alert("حدث خطأ أثناء تعديل الدرس");
+        }
+    } catch (error) {
+        console.error("Error:", error);
+        alert("تعذر الاتصال بالسيرفر");
+    }
 });

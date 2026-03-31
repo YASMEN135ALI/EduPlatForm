@@ -1,56 +1,84 @@
-// الحصول على ID المدرّس من الرابط
-const urlParams = new URLSearchParams(window.location.search);
-const teacherId = urlParams.get("id");
+document.addEventListener("DOMContentLoaded", function () {
 
-// عناصر الصفحة
-const nameEl = document.getElementById("teacherName");
-const emailEl = document.getElementById("teacherEmail");
-const specialtyEl = document.getElementById("teacherSpecialty");
-const bioEl = document.getElementById("teacherBio");
-const coursesCountEl = document.getElementById("coursesCount");
-const studentsCountEl = document.getElementById("studentsCount");
-const coursesContainer = document.getElementById("teacherCourses");
+    const token = localStorage.getItem("token");
 
-// بيانات تجريبية
-const sampleTeacher = {
-    id: 1,
-    name: "أحمد سالم",
-    email: "ahmed@example.com",
-    specialty: "تطوير الويب",
-    bio: "مدرّس متخصص في تطوير الويب بخبرة تزيد عن 7 سنوات في HTML, CSS, JavaScript و Django.",
-    courses: [
-        { id: 1, title: "دورة HTML & CSS", students: 150 },
-        { id: 2, title: "دورة JavaScript", students: 120 },
-        { id: 3, title: "دورة Django Framework", students: 90 }
-    ]
-};
+    if (!token) {
+        window.location.href = "login.html";
+        return;
+    }
 
-// تحميل بيانات المدرّس
-function loadTeacherProfile(teacher) {
-    nameEl.textContent = teacher.name;
-    emailEl.textContent = teacher.email;
-    specialtyEl.textContent = teacher.specialty;
-    bioEl.textContent = teacher.bio;
+    // 1) جلب بيانات البروفايل
+    fetch("http://127.0.0.1:8000/api/accounts/teacher/profile/", {
+        method: "GET",
+        headers: {
+            "Authorization": "Token " + token
+        }
+    })
+    .then(res => res.json())
+    .then(data => {
+        const profile = data.profile;
+        const user = data.user;
 
-    coursesCountEl.textContent = teacher.courses.length;
-    studentsCountEl.textContent = teacher.courses.reduce((a, b) => a + b.students, 0);
+        document.getElementById("teacherName").textContent = user.first_name + " " + user.last_name;
+        document.getElementById("teacherSpecialization").textContent = profile.specialization || "غير محدد";
+        document.getElementById("teacherRating").textContent = profile.rating_avg;
+        document.getElementById("teacherBalance").textContent = profile.balance;
 
-    // عرض الكورسات
-    coursesContainer.innerHTML = "";
-    teacher.courses.forEach(course => {
-        coursesContainer.innerHTML += `
-            <div class="col-md-4 mb-4">
-                <div class="card course-card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="fw-bold">${course.title}</h5>
-                        <p class="text-muted">الطلاب: ${course.students}</p>
-                        <a href="course-detail.html?id=${course.id}" class="btn btn-primary w-100">عرض الكورس</a>
-                    </div>
-                </div>
-            </div>
-        `;
+        document.getElementById("experienceYears").textContent = profile.experience_years || 0;
+        document.getElementById("teacherBio").textContent = profile.bio || "لا توجد نبذة.";
+
+        if (profile.photo) {
+            document.getElementById("teacherPhoto").src = profile.photo;
+        }
+
+        if (profile.cv) {
+            document.getElementById("cvLink").href = profile.cv;
+        }
+
+        if (profile.certificate) {
+            document.getElementById("certificateLink").href = profile.certificate;
+        }
+
+        // تعبئة النموذج
+        document.getElementById("specialization").value = profile.specialization || "";
+        document.getElementById("experience_years").value = profile.experience_years || "";
+        document.getElementById("bio").value = profile.bio || "";
     });
-}
 
-// تحميل البيانات التجريبية الآن
-loadTeacherProfile(sampleTeacher);
+    // 2) تحديث البيانات
+    document.getElementById("updateProfileForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const formData = new FormData();
+
+        formData.append("specialization", document.getElementById("specialization").value);
+        formData.append("experience_years", document.getElementById("experience_years").value);
+        formData.append("bio", document.getElementById("bio").value);
+
+        const photo = document.getElementById("photo").files[0];
+        const cv = document.getElementById("cv").files[0];
+        const certificate = document.getElementById("certificate").files[0];
+
+        if (photo) formData.append("photo", photo);
+        if (cv) formData.append("cv", cv);
+        if (certificate) formData.append("certificate", certificate);
+
+        fetch("http://127.0.0.1:8000/api/accounts/teacher/profile/update/", {
+            method: "POST",
+            headers: {
+                "Authorization": "Token " + token
+            },
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert("تم تحديث البروفايل بنجاح");
+            location.reload();
+        })
+        .catch(err => {
+            console.error(err);
+            alert("حدث خطأ أثناء التحديث");
+        });
+    });
+
+});

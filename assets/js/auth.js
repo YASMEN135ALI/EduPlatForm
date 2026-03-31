@@ -1,48 +1,65 @@
-document.getElementById("loginForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("Login JS Loaded");
 
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const errorMsg = document.getElementById("errorMsg");
+    const form = document.getElementById("loginForm");
 
-    if (!username || !password) {
-        errorMsg.textContent = "يرجى إدخال اسم المستخدم وكلمة المرور";
-        errorMsg.classList.remove("d-none");
-        return;
-    }
+    form.addEventListener("submit", async function (e) {
+        e.preventDefault();
 
-    errorMsg.classList.add("d-none");
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-    console.log("جاهز للربط مع API…");
-});
-// تسجيل حساب جديد
-document.getElementById("registerForm")?.addEventListener("submit", function (e) {
-    e.preventDefault();
+        try {
+            const response = await fetch("http://127.0.0.1:8000/api/accounts/login/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: password
+                })
+            });
 
-    const username = document.getElementById("username").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const confirmPassword = document.getElementById("confirmPassword").value.trim();
-    const role = document.getElementById("role").value.trim();
+            const result = await response.json();
+            console.log(result);
 
-    const errorMsg = document.getElementById("errorMsg");
-    const successMsg = document.getElementById("successMsg");
+            if (result.token) {
 
-    if (!username || !email || !password || !confirmPassword || !role) {
-        errorMsg.textContent = "يرجى تعبئة جميع الحقول";
-        errorMsg.classList.remove("d-none");
-        return;
-    }
+                // حفظ البيانات
+                localStorage.setItem("token", result.token);
+                localStorage.setItem("user_type", result.user_type);
 
-    if (password !== confirmPassword) {
-        errorMsg.textContent = "كلمتا المرور غير متطابقتين";
-        errorMsg.classList.remove("d-none");
-        return;
-    }
+                // التوجيه حسب نوع المستخدم
+                if (result.user_type === "student") {
+                    window.location.href = "student_dashboard.html";
 
-    errorMsg.classList.add("d-none");
-    successMsg.textContent = "جاهز للربط مع API…";
-    successMsg.classList.remove("d-none");
+                } else if (result.user_type === "teacher") {
 
-    console.log("بيانات جاهزة للإرسال:", { username, email, password, role });
+                    // 🔥 التحقق من الموافقة
+                    if (result.is_approved === true) {
+                        window.location.href = "dashboard-teacher.html";
+                    } else {
+                        window.location.href = "teacher_pending.html";
+                    }
+
+                } else if (result.user_type === "company") {
+
+                    // نفس الفكرة للشركة
+                    if (result.is_approved === true) {
+                        window.location.href = "dashboard-company.html";
+                    } else {
+                        window.location.href = "company_pending.html";
+                    }
+                }
+
+            } else {
+                alert("بيانات الدخول غير صحيحة.");
+            }
+
+        } catch (error) {
+            console.error("Error:", error);
+            alert("تعذر الاتصال بالخادم.");
+        }
+    });
 });
