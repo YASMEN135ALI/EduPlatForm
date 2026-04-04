@@ -35,8 +35,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         });
 
         const courses = await coursesRes.json();
-        console.log("Loaded courses:", courses);
-
         document.getElementById("myCoursesCount").textContent = courses.length;
 
         const container = document.getElementById("myCoursesContainer");
@@ -49,33 +47,66 @@ document.addEventListener("DOMContentLoaded", async function () {
                     <p class="text-muted">لا توجد كورسات مسجّل بها حتى الآن.</p>
                 </div>
             `;
-        }
+        } else {
+            courses.forEach(item => {
+                const course = item.course;
 
-        courses.forEach(course => {
-            container.innerHTML += `
-                <div class="col-md-4 mb-3">
-                    <div class="course-card">
+                // ============================
+                // زر حسب نسبة التقدم
+                // ============================
+                let actionButton = "";
 
-                        <img src="${course.course_image || 'assets/img/course_default.png'}" 
-                             class="w-100 mb-2 rounded">
-
-                        <h5 class="fw-bold">${course.course_title}</h5>
-
-                        <div class="progress mb-2">
-                            <div class="progress-bar bg-primary" style="width: ${course.progress_percentage}%"></div>
-                        </div>
-
-                        <p class="text-muted" style="font-size: 13px;">
-                            نسبة التقدم: ${course.progress_percentage}%
-                        </p>
-
-                        <button class="btn btn-primary btn-sm w-100" onclick="openCourse(${course.course_id})">
+                if (item.progress_percentage === 100) {
+                    actionButton = `
+                        <button class="btn btn-success btn-sm w-100" onclick="viewCertificate(${course.id})">
+                            عرض الشهادة
+                        </button>
+                    `;
+                } else {
+                    actionButton = `
+                        <button class="btn btn-primary btn-sm w-100" onclick="openCourse(${course.id})">
                             متابعة
                         </button>
+                    `;
+                }
+
+                // ============================
+                // بطاقة الكورس
+                // ============================
+                container.innerHTML += `
+                    <div class="col-md-4 mb-3">
+                        <div class="course-card">
+
+                            <img src="${course.image || 'assets/img/course_default.png'}" 
+                                class="w-100 mb-2 rounded">
+
+                            <h5 class="fw-bold">${course.title}</h5>
+
+                            <div class="progress mb-2">
+                                <div class="progress-bar bg-primary" style="width: ${item.progress_percentage}%"></div>
+                            </div>
+
+                            <p class="text-muted" style="font-size: 13px;">
+                                نسبة التقدم: ${item.progress_percentage}%
+                            </p>
+
+                            ${actionButton}
+                        </div>
                     </div>
-                </div>
-            `;
+                `;
+            });
+        }
+
+        // ============================
+        // 3) جلب عدد الشهادات
+        // ============================
+        const certCountRes = await fetch("http://127.0.0.1:8000/api/accounts/student/certificates/count/", {
+            method: "GET",
+            headers: { "Authorization": "Token " + token }
         });
+
+        const certCountData = await certCountRes.json();
+        document.getElementById("certificatesCount").textContent = certCountData.count;
 
     } catch (error) {
         console.error("Error loading student data:", error);
@@ -93,4 +124,9 @@ document.addEventListener("DOMContentLoaded", async function () {
 // دالة فتح صفحة الكورس
 function openCourse(id) {
     window.location.href = "student_course_view.html?id=" + id;
+}
+
+// دالة عرض الشهادة
+function viewCertificate(courseId) {
+    window.location.href = "certificate_view.html?course_id=" + courseId;
 }
